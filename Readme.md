@@ -195,7 +195,7 @@ LAB_00011624:
     printf("%s %d\n","spiFlashIoctl",0x37);
   }
   ```
-  Once a return value of Not -45 has been returned a subrotutine will be called finaly initaliying the update sequence. 
+  Once a return value of Not -45 has been returned, a subrotutine will be called to inact the update sequence. 
   
    ``` c
  LAB_0001195c:
