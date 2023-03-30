@@ -1,7 +1,7 @@
 ### MicroTick at a glance 
 
 ### DRAFT 1.0  Basic intro, overview of SWUPD AND devel login. 
-subject to change. 
+!subject to change. 
 
 Microtick at a Glance. 
 
@@ -50,7 +50,7 @@ This binary is used to login to the device and has some interesting options such
 
 The strings "admin" and "devel" are used as part of a login check for a developer login option. The code compares the input password string with the string "devel" to check if the user is trying to log in as a developer. If the input password matches "devel", then the code proceeds to check if the user has the "admin" option package.
 
-The use of these strings suggests that the binary has different login options for different types of users, such as a regular user and a developer. The "devel" string is used as an identifier for the developer login option, while the "admin" string is used as a flag to check if the user has the necessary option package to access certain functionalities.
+The use of these strings suggests that the binary has different login options for different types of users, such as a regular user and a developer. The "devel" string is used as an identifier for the developer login option, while the "admin" string is used as a flag to check if the user has the necessary option package to access certain functionalities. There has to be a 
 
 ```c
 FUN_00014260 
@@ -68,14 +68,9 @@ LAB_00015970:
         string::freeptr();
  ```
  
- ### IOCTL Screen size
+hasOptionPackage() function is being used to check whether the "option" package is installed or enabled, specifically for the "devel" login option. The login binary in question (/nova/bin/login) is responsible for authentication and contains this code for the purpose of enabling or disabling the "devel" login option based on whether the "option" package is available.
  
- Within the login binary there is one ioctl call for TIOCGWINSZ which calls the temrinal size. 
- FUN_0804bceb
- #### TIOCGWINSZ	0x5413 
-
-
-
+ 
 ## Software updates 
 
  ### The poeupdatefwv3 
