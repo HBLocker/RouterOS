@@ -15,6 +15,12 @@ I was looking at Shodan and was more looking at open devices and stumbled across
 
 In RouterOS, the Linux kernel provides a stable and reliable foundation for managing network infrastructure. It is highly optimized for networking and supports a wide range of hardware, including network adapters, wireless cards, and routers. Additionally, RouterOS includes a range of networking services and features built on top of the Linux kernel, such as routing, firewall, NAT, wireless access point, hotspot, VPN, and more. 
 
+
+
+
+
+
+
 Some of the kernel os OpenSource other parts of the software are closed source, RouterOS is somewhat a blend of the two. 
 
 We will be focusing here:
@@ -237,8 +243,11 @@ Ivar1 is rthe file descriptor
  ### What is an ATiny?
  
  An ATtiny chip is a type of microcontroller made by Atmel Corporation . It is a small (Hence the name) and an low cost chip that can be programmed to perform various functions in electronic devices.
+ 
  In our case it is being used to verify it is the correct device with a unique signature. 
  The signature is a unique identifier that is programmed into the ATtiny microcontroller during the manufacturing process. It is a 3-byte code that represents the device's manufacturer, device family, and device type. The signature is stored in a special read-only memory (ROM) area of the microcontroller, known as the Signature Row.
+ 
 The ATtiny signature is used by programming tools to identify the specific microcontroller that is being programmed, to ensure that the correct firmware is loaded onto the device. It is also used for verification purposes, to ensure that the microcontroller being used in a particular application is genuine and not a counterfeit.
 In our case it would be used to verify the POE update is on the correct device with the retun value from the IOCTL. 
 
+This is the lowest I am going to go on this, otherwise it will delive into logic gates on how this chip works.....
