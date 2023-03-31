@@ -298,6 +298,10 @@ In our case it would be used to verify the POE update is on the correct device w
 
 This is the lowest I am going to go on this, otherwise it will delive into logic gates on how this chip works.....
 
+## Socks 
+SOCKS is a proxy server that allows TCP based application data to relay across the firewall, even if the firewall would block the packets. The SOCKS protocol is independent from application protocols, so it can be used for many services, e.g, WWW, FTP, TELNET, and others
+
+
 
 
 ### References:
