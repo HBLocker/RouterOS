@@ -36,7 +36,7 @@ The compression used in NPK files is typically based on the LZMA algorithm, whic
 
 
 ### The CIA 
-I mean do we think anything we own really isnt in a custom some state sponored exploit kit? 
+I mean do we think anything we own really isnt in some custom state sponored exploit kit? 
 
 With no suprise when I found this, that within the vault 7 leaks where a cool rootkit developed by the CIA for Microtick routers.
 
