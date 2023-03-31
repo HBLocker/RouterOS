@@ -1,6 +1,7 @@
 ### MicroTick at a glance 
 
-### DRAFT 1.0  Basic intro, overview of SWUPD AND devel login. 
+### DRAFT 1.2  Basic intro, overview of SWUPD AND devel login Done. 
+- NPK overview done, CIA DONE.
 !subject to change. 
 
 Microtick at a Glance. 
@@ -16,10 +17,36 @@ I was looking at Shodan and was more looking at open devices and stumbled across
 In RouterOS, the Linux kernel provides a stable and reliable foundation for managing network infrastructure. It is highly optimized for networking and supports a wide range of hardware, including network adapters, wireless cards, and routers. Additionally, RouterOS includes a range of networking services and features built on top of the Linux kernel, such as routing, firewall, NAT, wireless access point, hotspot, VPN, and more. 
 
 
+### Understadning the NPK file format. 
+
+The NPk format was developed by MicroTick as a way to bundel thier packages togther. This will contain all the software and applications for RouterOS. 
+
+The compression used in NPK files is typically based on the LZMA algorithm, which is a popular data compression algorithm that provides a high compression ratio with relatively fast decompression times. LZMA works by finding repeated patterns in the data and replacing them with a smaller representation, resulting in a compressed file that is smaller in size than the original.
+
+- Header - The header of the NPK file consists of the ASCII string "NPK" followed by four null bytes.
+
+- Metadata - The metadata section contains information about the NPK package, such as the version number, architecture, and date of creation.
+
+- File entries - The file entries section contains a list of files that are included in the NPK package, along with metadata for each file, such as the file name, size, and permissions.
+
+- File data - The file data section contains the actual binary data for each file included in the NPK package.
+
+- Signature - The signature section is optional and contains a digital signature for the NPK package, which can be used to verify the integrity and authenticity of the package.
 
 
 
+### The CIA 
+I mean do we think anything we own really isnt backdoored? 
+With no suprise when I found this, that within the vault 7 leaks where a cool rootkit developed by the CIA for Microtick routers.
 
+ChimayRed is a buffer overflow exploit that targets a vulnerability in the Winbox component of MikroTik RouterOS. Winbox is a graphical user interface used to manage MikroTik devices and is included in the RouterOS distribution. The vulnerability allows an attacker to send a specially crafted packet to the Winbox service, causing a buffer overflow and executing arbitrary code on the target device.
+
+The ChimayRed exploit was designed to work on MikroTik RouterOS versions 6.38.4 and earlier, which were released between 2016 and 2017. MikroTik has since released patches to address the vulnerability, and users are advised to update their RouterOS installations to the latest version to prevent exploitation.
+
+It has since been patched. 
+
+
+### Looking at some of the internels 
 
 Some of the kernel os OpenSource other parts of the software are closed source, RouterOS is somewhat a blend of the two. 
 
@@ -79,7 +106,7 @@ hasOptionPackage() function is being used to check whether the "option" package 
  
 ## Software updates 
 
- ### The poeupdatefwv3 
+ ### poeupdatefwv3 
    
    So, I had no idea what this was, I saw the binary and first opened it in Ghidra to try see what it is, I then googled the name and it is a MMO game (Path of Exile).    Sadly my excitment was depeleted when it is just a firmware update over the ethernet. But still! I reversed it and here is how this works!
    
@@ -103,7 +130,7 @@ void FUN_00010bf8(char *param_1)
 
 
 
- ### Main update function -  FUN_000115ac  
+ #### Main update function -  FUN_000115ac  
   
   
   First the function checks the size of the file and verifies it can be opened:
@@ -142,7 +169,7 @@ LAB_00011624:
               goto LAB_000118cc;
             }
  ``` 
- ## Writing to memory 
+ #### Writing to memory 
  
  When calling --force-spi  this forces the update and to write over previous memeoy. 
  
@@ -215,7 +242,7 @@ LAB_00011624:
   
   
 
-### Signature verification 
+#### Signature verification 
 
 There is an option for the signatue to be verified for the POE update. It appears that RouterOS has spesific IOCTL calls to ATiny chip for some sort of signature verification. 
 
@@ -240,7 +267,7 @@ Ivar1 is rthe file descriptor
    ```     
  Both of the errors are for the ATtiny signature... 
  
- ### What is an ATiny?
+ #### What is an ATiny?
  
  An ATtiny chip is a type of microcontroller made by Atmel Corporation . It is a small (Hence the name) and an low cost chip that can be programmed to perform various functions in electronic devices.
  
