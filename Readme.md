@@ -279,3 +279,20 @@ The ATtiny signature is used by programming tools to identify the specific micro
 In our case it would be used to verify the POE update is on the correct device with the retun value from the IOCTL. 
 
 This is the lowest I am going to go on this, otherwise it will delive into logic gates on how this chip works.....
+
+
+
+### References:
+
+Kirils Solovjovs. (2017). Tools for effortless reverse engineering of MikroTik routers. [Online]. NA. Available at: https://kirils.org/slides/2017-09-15_prez_15_MT_Balccon_pub.pdf [Accessed 31 March 2023].
+
+ATtiny. (2013). Atmel 8-bit AVR Microcontroller with 2/4/8K Bytes In-System Programmable Flash. [Online]. ATtiny25. Available at: https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-2586-AVR-8-bit-Microcontroller-ATtiny25-ATtiny45-ATtiny85_Datashe [Accessed 31 March 2023].
+
+
+NA. (2010). what_is_routeros.pdf. [Online]. NA. Available at: https://i.mt.lv/files/pdf/instructions/what_is_routeros.pdf [Accessed 31 March 2023].
+
+
+
+
+
+
