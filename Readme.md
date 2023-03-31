@@ -1,7 +1,4 @@
 ### MicroTick at a glance 
-
-### DRAFT 1.2  Basic intro, overview of SWUPD AND devel login Done. 
-- NPK overview done, CIA DONE.
 !subject to change. 
 
 Microtick at a Glance. 
