@@ -5,7 +5,9 @@ Microtick at a Glance.
 
 
 I was looking at Shodan and was more looking at open devices and stumbled across Microtick routers. Which began this rabbit hole I gradually fell down….
-
+```bash
+product:"MikroTik"
+```
 ![Router os open devices world wide ](https://www.shodan.io/search/facet.png?query=mikrotik&facet=country)
 
 
@@ -42,6 +44,25 @@ ChimayRed is a buffer overflow exploit that targets a vulnerability in the Winbo
 The ChimayRed exploit was designed to work on MikroTik RouterOS versions 6.38.4 and earlier, which were released between 2016 and 2017. MikroTik has since released patches to address the vulnerability, and users are advised to update their RouterOS installations to the latest version to prevent exploitation.
 
 It has since been patched. 
+
+
+### UDP packet strcuture. 
+
+Currently this is a WIP as I am reversing as much as one can do. 
+
+With the shodan results, you can see the UDP packets have the following strcuture:
+
+```
+\xc8\x02\x00i\x00\x00\x00\x00\x00\x00\x00\x01\x80\x08\x00\x00\x00\x00\x00\x02\x80\x08\x00\x00\x00\x02\x01\x00\x80\n\x00\x00\x00\x03\x00\x00\x00\x01\x80\n\x00\x00\x00\x04\x00\x00\x00\x00\x00\x08\x00\x00\x00\x06\x00\x01\x80\x13\x00\x00\x00\x07rt1.pol2.gkb1\x00\x0e\x00\x00\x00\x08MikroTik\x80\x08\x00\x00\x00\t\x01}\x80\x08\x00\x00\x00\n\x00\x04
+```
+First, the packet starts with the source port number in hexadecimal format (\xc8\x02). In this case, it represents the value 51202 in decimal, which is the port from which the packet originated. The next two bytes (\x00\x69) represent the destination port number, which is zero in this case, indicating that the packet is not destined for a s
+pecific port.
+
+The remaining bytes of the packet represent the packet payload. The format of this payload is specific to RouterOS and appears to include a variety of settings and configuration parameters.
+
+The payload starts with several null bytes (\x00\x00\x00\x00\x00\x00\x00\x01) followed by a series of values that are likely related to the device or service using RouterOS. These values include a mix of numeric values in hexadecimal format, ASCII strings (e.g., "rt1.pol2.gkb1"), and other data types.
+
+Some of these values have specific meanings within the RouterOS system, such as the "MikroTik" string, which likely identifies the type of device or service using RouterOS. Other values are likely specific to the particular network configuration or service being used.
 
 
 ### Looking at some of the internels 
