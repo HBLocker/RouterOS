@@ -36,7 +36,8 @@ The compression used in NPK files is typically based on the LZMA algorithm, whic
 
 
 ### The CIA 
-I mean do we think anything we own really isnt backdoored? 
+I mean do we think anything we own really isnt in a custom some state sponored exploit kit? 
+
 With no suprise when I found this, that within the vault 7 leaks where a cool rootkit developed by the CIA for Microtick routers.
 
 ChimayRed is a buffer overflow exploit that targets a vulnerability in the Winbox component of MikroTik RouterOS. Winbox is a graphical user interface used to manage MikroTik devices and is included in the RouterOS distribution. The vulnerability allows an attacker to send a specially crafted packet to the Winbox service, causing a buffer overflow and executing arbitrary code on the target device.
