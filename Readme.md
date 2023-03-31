@@ -209,6 +209,36 @@ LAB_00011624:
   
   
 
+### Signature verification 
 
+There is an option for the signatue to be verified for the POE update. It appears that RouterOS has spesific IOCTL calls to ATiny chip for some sort of signature verification. 
 
+Ivar1 is rthe file descriptor
+ ``` c 
+  local_b03c = pcVar4;
+  iVar2 = ioctl(iVar1,0x80046fef);
+  if (iVar2 < 0) {
+    perror("read tiny signature");
+    uVar12 = 0xb;
+  }
+ ``` 
+ ```  c
+   else {
+    printf("Attiny signature: %x\n",(uint)local_b03c);
+    if (local_b03c == (char *)0x1e9208) {
+      iVar2 = ioctl(iVar1,0x50086ff0,&local_a038);
+      if (iVar2 < 0) {
+        uVar12 = 0x19;
+        perror("write flash");
+      }
+   ```     
+ Both of the errors are for the ATtiny signature... 
+ 
+ ### What is an ATiny?
+ 
+ An ATtiny chip is a type of microcontroller made by Atmel Corporation . It is a small (Hence the name) and an low cost chip that can be programmed to perform various functions in electronic devices.
+ In our case it is being used to verify it is the correct device with a unique signature. 
+ The signature is a unique identifier that is programmed into the ATtiny microcontroller during the manufacturing process. It is a 3-byte code that represents the device's manufacturer, device family, and device type. The signature is stored in a special read-only memory (ROM) area of the microcontroller, known as the Signature Row.
+The ATtiny signature is used by programming tools to identify the specific microcontroller that is being programmed, to ensure that the correct firmware is loaded onto the device. It is also used for verification purposes, to ensure that the microcontroller being used in a particular application is genuine and not a counterfeit.
+In our case it would be used to verify the POE update is on the correct device with the retun value from the IOCTL. 
 
