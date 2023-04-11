@@ -304,7 +304,7 @@ Within the internels how are the binaries initialy loaded and configured?
 
 XML of course! (somewhat) This is a unuiqe format for RouterOS, within the file you can see here is is used to load the biniares as a config file this is done on boot and read with  libuxml++.so
 ### System.x3 
-  ```  
+  ```   
 /nova/bin/resolver
 /nova/bin/mactel
 /nova/bin/undo
