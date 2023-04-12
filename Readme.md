@@ -1,5 +1,5 @@
 ### MicroTick at a glance 
-!subject to change. Draft 1.3 socks
+!subject to change. Draft 1.4 libradious
 
 Microtick at a Glance. 
 
@@ -304,7 +304,7 @@ Within the internels how are the binaries initialy loaded and configured?
 
 XML of course! (somewhat) This is a unuiqe format for RouterOS, within the file you can see here is is used to load the biniares as a config file this is done on boot and read with  libuxml++.so
 ### System.x3 
-  ```   
+  ``` 
 /nova/bin/resolver
 /nova/bin/mactel
 /nova/bin/undo
@@ -318,6 +318,151 @@ XML of course! (somewhat) This is a unuiqe format for RouterOS, within the file 
 /nova/bin/traceroute
 ...
  ```
+
+### liburadius
+
+/lib/liburadius.so
+
+liburadius.so is a shared library file that provides a set of functions and symbols that can be used by other software programs. In particular, it provides functionality related to the RADIUS (Remote Authentication Dial-In User Service) protocol, which is used for remote authentication and accounting in computer networks.
+
+
+The libary file is a custom one made by MicroTick, this was indicated by the some of the commands withing the libary file. The call of nv::message I will detail more later. 
+
+The command used in function FUN_00012834:
+```c
+  nv::message::~message((message *)(param_1 + 4)); //lib/libumsg.so 
+ ```
+
+Start --> End 
+
+#### FUN_000127dc: 
+
+Sets the "basefield" flag of the ios object to std::ios_base::binary (i.e., sets the output formatting to binary).
+
+ ```c
+  ios::setf(param_1,2);
+  return param_1;
+}
+ ``` 
+
+### FUN_000127f8:
+
+Deletes the element pointed to by the pointer *param_1 from a vector_base object pointed to by param_1, then calls the destructor for that vector_base object.
+
+ ```c
+{
+  vector_base::erase_raw((char *)param_1,*param_1);
+  vector_base::~vector_base((vector_base *)param_1);
+  return param_1;
+}
+```
+
+
+#### FUN_00012878:
+Allocates memory for a new array of size 20 (presumably to store a nv::message object and some additional data), then initializes the first four elements of the array with &PTR_LAB_00025ec0, the contents of two specific addresses in the input param_1 array, and the contents of two specific addresses immediately following those in the param_1 array. Finally, it initializes the remaining elements of the new array with a nv::message object constructed from data in the input param_1 array, then returns a pointer to the new array.
+
+ ```c
+  puVar1 = (undefined4 *)malloc(0x14);
+  *puVar1 = &PTR_LAB_00025ec0;
+  puVar1[1] = *(undefined4 *)(param_1 + 4);
+  uVar2 = *(undefined4 *)(param_1 + 0xc);
+  puVar1[2] = *(undefined4 *)(param_1 + 8);
+  puVar1[3] = uVar2;
+  nv::message::message((message *)(puVar1 + 4),(message *)(param_1 + 0x10));
+  return puVar1;
+ ```
+
+### FUN_000128c8:
+Writes a hexadecimal representation of the param_3 bytes starting at the address param_2 to the output stream param_1, with some additional formatting.
+ ```c
+   iStack_24 = param_2;
+  operator<<(param_1,"0x");
+  for (uVar1 = 0; uVar1 != param_3; uVar1 = uVar1 + 1) {
+    if ((uVar1 != 0) && ((uVar1 & 0xf) == 0)) {
+      endl(param_1);
+      operator<<(param_1,"      ");
+    }
+    snprintf((char *)&iStack_24,3,"%2.2x",(uint)*(byte *)(param_2 + uVar1));
+    operator<<(param_1,(char *)&iStack_24);
+  }
+  ```
+  
+### FUN_000129b0: 
+This function takes in two parameters, a pointer to an integer and a pointer to an unsigned integer. It first checks if the least significant byte of the unsigned integer is not zero, and if so, it prints a formatted string to the output stream pointed to by the integer pointer. Then it calls another function with a modified integer pointer to perform some other task. Finally, it prints the remaining three bytes of the unsigned integer to the output stream.
+
+ ```c
+   if ((uVar2 & 0xff) != 0) {
+    poVar1 = (ostream *)operator<<((ostream *)param_1,"(");
+    poVar1 = (ostream *)operator<<(poVar1,uVar2 & 0xff);
+    operator<<(poVar1,") ");
+  }
+  FUN_000127dc((int)param_1 + *(int *)(*param_1 + -0xc));
+  operator<<((ostream *)param_1,
+             (uVar2 >> 8 & 0xff) << 0x10 | (uVar2 >> 0x10 & 0xff) << 8 | uVar2 >> 0x18);
+             return; 
+  ```
+
+### FUN_00012a84
+This function takes in two parameters, a pointer to an integer and an unsigned integer. It first calculates the size of a memory buffer by subtracting the integer pointed to by the second parameter from the integer pointed to by the first parameter. If the second parameter is less than the buffer size, it deletes some data from the buffer using the vector_base::erase_raw function. If the second parameter is greater than the buffer size, it adds some data to the buffer using the vector_base::insert_raw function.
+
+```c
+  if (param_2 < uVar1) {
+    vector_base::erase_raw((char *)param_1,(char *)(*param_1 + param_2));
+    return;
+  }
+  uVar1 = param_2 - uVar1;
+  if (uVar1 == 0) {
+    return;
+  }
+  __s = (void *)vector_base::insert_raw((char *)param_1,param_1[1],uVar1);
+  memset(__s,0,uVar1);
+```
+
+### FUN_00012be0: 
+
+This function takes an ostream object, a pointer to a byte array (byte *), and a uint parameter. It loops through the byte array and checks if each byte is in the range [0x20, 0x7e]. If all bytes are in this range, it converts the byte array to a string, encloses it in double quotes, 
+```c
+  do {
+    local_14 = param_2;
+    if (pbVar3 == param_2 + param_3) {
+      poVar2 = (ostream *)operator<<(param_1,'\"');
+      string::string((string *)&local_14,(char *)param_2,param_3);
+      poVar2 = (ostream *)FUN_00012bc4(poVar2,(char)local_14);
+      operator<<(poVar2,'\"');
+      string::freeptr();
+      return;
+    }
+    bVar1 = *pbVar3;
+    pbVar3 = pbVar3 + 1;
+  } while (bVar1 - 0x20 < 0x5f);
+```
+
+
+### FUN_00012c64: 
+This function takes an ostream object, a pointer to a byte array, and a uint parameter. If the first byte of the byte array is less than 0x20, it writes the byte enclosed in parentheses to the ostream. Then, it calls FUN_00012be0 with the same parameters.
+
+```c
+  if ((param_3 != 0) && (uVar2 = (uint)*param_2, uVar2 < 0x20)) {
+    param_2 = param_2 + 1;
+    param_3 = param_3 - 1;
+    if (uVar2 != 0) {
+      poVar1 = (ostream *)operator<<(param_1,"(");
+      poVar1 = (ostream *)operator<<(poVar1,uVar2);
+      operator<<(poVar1,") ");
+    }
+  }
+  FUN_00012be0(param_1,param_2,param_3);
+ ``` 
+
+### FUN_00012cdc
+This function takes an ostream object and a pointer to an undefined 4-byte array (undefined4 *). It calls FUN_00012a3c with auStack_20 and param_2 as parameters, which is not shown here. It then calls IPAddr6::str to convert the auStack_20 array to a string representation of an IPv6 address, stores the result in local_24, and writes local_24 to the ostream.
+
+ ```c
+  IPAddr6::str((bool)((char)&stack0xfffffff4 + -0x18));
+  FUN_00012bc4(param_1,local_24);
+  string::freeptr();
+  return;
+   ``` 
 
 ### References:
 
