@@ -474,6 +474,7 @@ Finally, the function right-shifts the result of  ```count_leading_zeroes(string
 
 This function could potentially be vulnerable to a type confusion vulnerability. The fact that it takes a pointer to a pointer to an integer and implicitly converts it to a string object could be problematic if an attacker is able to pass a pointer to an object that is not actually an integer, but instead contains a malicious object that can exploit the string::compare function or cause some other type of undefined behavior. Additionally, the count_leading_zeroes function could potentially be exploited if an attacker can pass an argument that causes an integer overflow. 
 
+
    ```c 
    uint uVar1;
   undefined4 uVar2;
@@ -500,6 +501,67 @@ The library is composed of several functions, including FUN_000127dc which check
 One potentially vulnerable function is FUN_00012d98, which compares two IP addresses and returns a value indicating the number of leading zeroes in their binary representation. This function could potentially be exploited if input validation is not performed properly, leading to a buffer overflow or other security vulnerabilities.
 
 Overall, the library provides useful functionality for working with IP addresses, but it is important to ensure that proper input validation and error handling is implemented to prevent potential security vulnerabilities.
+
+
+### Exampleing 
+
+Here is a somewhat example of a possible bug in the code, this probably cant be teiggered from outside the code base but in an ideal world it can! After a few hours of revising c++, Alas! 
+
+   ```c++
+  #include <iostream>
+#include <bitset>
+#include <cstring>
+
+// Counts the number of leading zero bits in a 32-bit integer.
+uint32_t count_leading_zeroes(uint32_t value) {
+    // Use bitset to count leading zeros.
+    std::bitset<32> bits(value);
+    return (bits._Find_first() == 32) ? 32 : bits._Find_first();
+}
+
+// The vulnerable function that uses count_leading_zeroes().
+uint32_t FUN_00012d98(int **param_1, int *param_2) {
+    uint32_t uVar1;
+    uint32_t uVar2;
+
+    // If the value at the address of the value at param_1 is equal to the value at param_2.
+    if (**param_1 == *param_2) {
+        // Get the length of the string pointed to by the value at param_1.
+        uVar2 = strlen((char *)*param_1);
+
+        // Count the number of leading zeroes in the length as a hex string.
+        uVar1 = count_leading_zeroes(uVar2);
+        uVar1 = uVar1 >> 5;
+    }
+    else {
+        // Set the result to 0 if the values are not equal.
+        uVar1 = 0;
+    }
+
+    return uVar1;
+}
+
+// The main function that triggers the vulnerability.
+int main() {
+    int x = 0x12345678;
+    int *p1 = &x;
+    int *p2 = &x;
+
+    // Call the vulnerable function with the pointers.
+    uint32_t result = FUN_00012d98(&p1, p2);
+
+    if (result == 0) {
+        // The vulnerability is not triggered.
+        std::cerr << "Memory error: the vulnerability is not triggered\n";
+    }
+    else {
+        // The vulnerability is triggered.
+        std::cout << "The vulnerability is triggered with result: " << result << "\n";
+    }
+
+    return 0;
+}
+    ```
 
 
 ### References:
