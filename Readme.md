@@ -436,7 +436,6 @@ This function takes an ostream object, a pointer to a byte array (byte *), and a
   } while (bVar1 - 0x20 < 0x5f);
 ```
 
-
 ### FUN_00012c64: 
 This function takes an ostream object, a pointer to a byte array, and a uint parameter. If the first byte of the byte array is less than 0x20, it writes the byte enclosed in parentheses to the ostream. Then, it calls FUN_00012be0 with the same parameters.
 
@@ -469,11 +468,11 @@ This function takes an ostream object and a pointer to an undefined 4-byte array
 
 The string::compare function compares the string represented by its this pointer (which is the string object that was implicitly created) with the string represented by its argument. The return value is an integer that is negative if the first string is less than the second, zero if they are equal, or positive if the first string is greater than the second.
 
-The count_leading_zeroes function takes an unsigned integer as its argument and returns the number of leading zeroes in its binary representation.
+The  count_leading_zeroes function takes an unsigned integer as its argument and returns the number of leading zeroes in its binary representation.
 
-Finally, the function right-shifts the result of count_leading_zeroes(string::compare(...)) by 5 (i.e. divides by 32) and returns the result.
+Finally, the function right-shifts the result of  ```count_leading_zeroes(string::compare(...)) ```  by 5 (i.e. divides by 32) and returns the result.
 
-This function could potentially be vulnerable to a type confusion vulnerability. The fact that it takes a pointer to a pointer to an integer and implicitly converts it to a string object could be problematic if an attacker is able to pass a pointer to an object that is not actually an integer, but instead contains a malicious object that can exploit the string::compare function or cause some other type of undefined behavior. Additionally, the count_leading_zeroes function could potentially be exploited if an attacker can pass an argument that causes an integer overflow or other undefined behavior. It is important to note, however, that without additional context it is difficult to say with certainty whether or not this function is vulnerable in practice.
+This function could potentially be vulnerable to a type confusion vulnerability. The fact that it takes a pointer to a pointer to an integer and implicitly converts it to a string object could be problematic if an attacker is able to pass a pointer to an object that is not actually an integer, but instead contains a malicious object that can exploit the string::compare function or cause some other type of undefined behavior. Additionally, the count_leading_zeroes function could potentially be exploited if an attacker can pass an argument that causes an integer overflow. 
 
    ```c 
    uint uVar1;
