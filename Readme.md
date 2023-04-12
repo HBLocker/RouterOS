@@ -462,7 +462,35 @@ This function takes an ostream object and a pointer to an undefined 4-byte array
   string::freeptr();
   return;
    ``` 
-   
+ 
+ 
+###  FUN_00012d98
+ Function takes two parameters: param_1, which is a pointer to a pointer to an integer, and param_2, which is a pointer to an integer. The function first checks if the integer pointed to by the pointer to the pointer param_1 is equal to the integer pointed to by param_2. If they are equal, the function calls the string::compare function with SUB41(param_1,0) as its argument. This is a bit convoluted, but essentially SUB41(param_1,0) just dereferences the pointer to the pointer param_1 to get a pointer to an integer, which is then implicitly converted to a string object.
+
+The string::compare function compares the string represented by its this pointer (which is the string object that was implicitly created) with the string represented by its argument. The return value is an integer that is negative if the first string is less than the second, zero if they are equal, or positive if the first string is greater than the second.
+
+The count_leading_zeroes function takes an unsigned integer as its argument and returns the number of leading zeroes in its binary representation.
+
+Finally, the function right-shifts the result of count_leading_zeroes(string::compare(...)) by 5 (i.e. divides by 32) and returns the result.
+
+This function could potentially be vulnerable to a type confusion vulnerability. The fact that it takes a pointer to a pointer to an integer and implicitly converts it to a string object could be problematic if an attacker is able to pass a pointer to an object that is not actually an integer, but instead contains a malicious object that can exploit the string::compare function or cause some other type of undefined behavior. Additionally, the count_leading_zeroes function could potentially be exploited if an attacker can pass an argument that causes an integer overflow or other undefined behavior. It is important to note, however, that without additional context it is difficult to say with certainty whether or not this function is vulnerable in practice.
+
+   ```c 
+   uint uVar1;
+  undefined4 uVar2;
+  
+  if (**param_1 == *param_2) {
+    uVar2 = string::compare(SUB41(param_1,0));
+    uVar1 = count_leading_zeroes(uVar2);
+    uVar1 = uVar1 >> 5;
+  }
+  else {
+    uVar1 = 0;
+  }
+  return uVar1;
+   ``` 
+ 
+ 
    
    #### Sumary 
    
