@@ -463,8 +463,8 @@ This function takes an ostream object and a pointer to an undefined 4-byte array
   return;
    ``` 
  
- 
 ###  FUN_00012d98
+
  Function takes two parameters: param_1, which is a pointer to a pointer to an integer, and param_2, which is a pointer to an integer. The function first checks if the integer pointed to by the pointer to the pointer param_1 is equal to the integer pointed to by param_2. If they are equal, the function calls the string::compare function with SUB41(param_1,0) as its argument. This is a bit convoluted, but essentially SUB41(param_1,0) just dereferences the pointer to the pointer param_1 to get a pointer to an integer, which is then implicitly converted to a string object.
 
 The string::compare function compares the string represented by its this pointer (which is the string object that was implicitly created) with the string represented by its argument. The return value is an integer that is negative if the first string is less than the second, zero if they are equal, or positive if the first string is greater than the second.
@@ -492,9 +492,8 @@ This function could potentially be vulnerable to a type confusion vulnerability.
  
  
    
-   #### Sumary 
-   
-   
+   #### In Sumary 
+      
 In summary, the code provided is a C++ library for handling IP addresses. It includes functions for parsing and formatting IPv4 and IPv6 addresses, as well as converting between different representations of IP addresses.
 
 The library is composed of several functions, including FUN_000127dc which checks the validity of an IPv6 address and returns a boolean value indicating whether it is valid or not. There are also functions such as FUN_00012be0 which formats an IP address as a string and FUN_00012cdc which converts an IPv6 address to a string.
