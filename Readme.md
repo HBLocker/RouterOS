@@ -561,8 +561,61 @@ int main() {
 
     return 0;
 }
-```
 
+```bash
+==3898500==ERROR: AddressSanitizer: stack-buffer-overflow on address 0x7fffb469c6a4 at pc 0x56086a885fb1 bp 0x7fffb469c620 sp 0x7fffb469bdd0
+READ of size 5 at 0x7fffb469c6a4 thread T0                                                                                                                                                                                                  
+    #0 0x56086a885fb0 in __interceptor_strlen.part.0 (/home/kali/test_tick/a.out+0x2efb0)
+    #1 0x56086a93c01e in FUN_00012d98(int**, int*) /home/kali/test_tick/poc.cpp:20
+    #2 0x56086a93c13e in main /home/kali/test_tick/poc.cpp:41
+    #3 0x7fe2cd167189 in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:58
+    #4 0x7fe2cd167244 in __libc_start_main_impl ../csu/libc-start.c:381
+    #5 0x56086a8603a0 in _start (/home/kali/test_tick/a.out+0x93a0)
+
+Address 0x7fffb469c6a4 is located in stack of thread T0 at offset 52 in frame
+    #0 0x56086a93c050 in main /home/kali/test_tick/poc.cpp:35
+
+  This frame has 2 object(s):
+    [48, 52) 'x' (line 36) <== Memory access at offset 52 overflows this variable
+    [64, 72) 'p1' (line 37)
+HINT: this may be a false positive if your program uses some custom stack unwind mechanism, swapcontext or vfork
+      (longjmp and C++ exceptions *are* supported)
+SUMMARY: AddressSanitizer: stack-buffer-overflow (/home/kali/test_tick/a.out+0x2efb0) in __interceptor_strlen.part.0
+Shadow bytes around the buggy address:
+  0x1000768cb880: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x1000768cb890: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x1000768cb8a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x1000768cb8b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x1000768cb8c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 f1 f1
+=>0x1000768cb8d0: f1 f1 f1 f1[04]f2 00 f3 f3 f3 00 00 00 00 00 00
+  0x1000768cb8e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x1000768cb8f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x1000768cb900: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x1000768cb910: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x1000768cb920: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==3898500==ABORTING
+```
+==3898500==ERROR: AddressSanitizer: stack-buffer-overflow on address 0x7fffb469c6a4 at pc 0x56086a885fb1 bp 0x7fffb469c620 sp 0x7fffb469bdd0
+```
 
 ### References:
 
