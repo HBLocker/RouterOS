@@ -3,7 +3,6 @@
 
 Microtick at a Glance. 
 
-
 I was looking at Shodan and was more looking at open devices and stumbled across Microtick routers. Which began this rabbit hole I gradually fell down….
 ```bash
 product:"MikroTik"
