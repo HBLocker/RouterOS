@@ -508,11 +508,4 @@ Kirils Solovjovs. (2017). Tools for effortless reverse engineering of MikroTik r
 
 ATtiny. (2013). Atmel 8-bit AVR Microcontroller with 2/4/8K Bytes In-System Programmable Flash. [Online]. ATtiny25. Available at: https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-2586-AVR-8-bit-Microcontroller-ATtiny25-ATtiny45-ATtiny85_Datashe [Accessed 31 March 2023].
 
-
 NA. (2010). what_is_routeros.pdf. [Online]. NA. Available at: https://i.mt.lv/files/pdf/instructions/what_is_routeros.pdf [Accessed 31 March 2023].
-
-
-
-
-
-
