@@ -561,8 +561,15 @@ int main() {
 
     return 0;
 }
+```
 
 ```bash
+
+$ g++ poc.cpp -fsanitize=address -static-libasan -g
+
+$ ./poc
+
+
 ==3898500==ERROR: AddressSanitizer: stack-buffer-overflow on address 0x7fffb469c6a4 at pc 0x56086a885fb1 bp 0x7fffb469c620 sp 0x7fffb469bdd0
 READ of size 5 at 0x7fffb469c6a4 thread T0                                                                                                                                                                                                  
     #0 0x56086a885fb0 in __interceptor_strlen.part.0 (/home/kali/test_tick/a.out+0x2efb0)
@@ -614,8 +621,7 @@ Shadow byte legend (one shadow byte represents 8 application bytes):
   Right alloca redzone:    cb
 ==3898500==ABORTING
 ```
-==3898500==ERROR: AddressSanitizer: stack-buffer-overflow on address 0x7fffb469c6a4 at pc 0x56086a885fb1 bp 0x7fffb469c620 sp 0x7fffb469bdd0
-```
+
 
 ### References:
 
