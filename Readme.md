@@ -503,11 +503,11 @@ One potentially vulnerable function is FUN_00012d98, which compares two IP addre
 Overall, the library provides useful functionality for working with IP addresses, but it is important to ensure that proper input validation and error handling is implemented to prevent potential security vulnerabilities.
 
 
-### Exampleing 
+### Example POC 
 
 Here is a somewhat example of a possible bug in the code, this probably cant be teiggered from outside the code base but in an ideal world it can! After a few hours of revising c++, Alas! 
 
-   ```c++
+```c++
   #include <iostream>
 #include <bitset>
 #include <cstring>
@@ -561,7 +561,7 @@ int main() {
 
     return 0;
 }
-    ```
+```
 
 
 ### References:
