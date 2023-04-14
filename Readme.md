@@ -1,5 +1,5 @@
 ### MicroTick at a glance 
-!subject to change. Draft 1.4 libradious
+!subject to change. Draft 1.5 libradious
 
 Microtick at a Glance. 
 
@@ -621,6 +621,146 @@ Shadow byte legend (one shadow byte represents 8 application bytes):
   Right alloca redzone:    cb
 ==3898500==ABORTING
 ```
+
+
+Alas! The final part I will be reversing to finish this litte project!
+
+## libumsg 
+This libary its self would constitute a full write up for as it is huge and an integral part of MicroTicks internels. 
+
+
+
+###  nv::kernelGetMacAddr
+
+This is a C++ function named nv::kernelSocket() which returns an integer. The purpose of this function is to create a kernel socket if it does not already exist and return the socket descriptor.
+
+```c
+int nv::kernelSocket(void)
+
+{
+  if (DAT_00069c08 == -1) {
+    DAT_00069c08 = socket(2,2,0);
+  }
+  return DAT_00069c08;
+}
+```
+
+### nv::kernelGetMacAddr 
+
+ kernelSocket and ioctl functions to retrieve the MAC address associated with a network interface, which is stored in an nv object. If the ioctl call fails, an error message is printed to cout and the nv object is zeroed out. The security of this function depends on its integration with the rest of the software system.
+ 
+
+```c
+nv * __thiscall nv::kernelGetMacAddr(nv *this,string *param_1)
+
+{
+  int iVar1;
+  int *piVar2;
+  undefined4 uVar3;
+  nv *pnVar4;
+  byte bVar5;
+  int local_40;
+  char local_3c [18];
+  undefined4 local_2a [6];
+  
+  bVar5 = 0;
+  strncpy(local_3c,(char *)(*(int *)param_1 + 4),0x10);
+  iVar1 = kernelSocket();
+  iVar1 = ioctl(iVar1,0x8927,local_3c);
+  if (iVar1 == -1) {
+    piVar2 = __errno_location();
+    ioctlErrorStr((nv *)&local_40,param_1,"SIOCGIFHWADDR",*piVar2);
+    uVar3 = FUN_0003995d((ostream *)&cout,&local_40);
+    FUN_0002da9e(uVar3,endl);
+    string::freeptr();
+    pnVar4 = this;
+    for (iVar1 = 6; iVar1 != 0; iVar1 = iVar1 + -1) {
+      *pnVar4 = (nv)0x0;
+      pnVar4 = pnVar4 + (uint)bVar5 * -2 + 1;
+    }
+  }
+  else {
+    FUN_0005cbb0((undefined4 *)this,local_2a);
+  }
+  return this;
+}
+
+```
+
+### nv::message::extract<nv::bool_id>
+ It is a templated function that takes a pointer to a message object, a bool_id object, and a pointer to a type object as its parameters.
+
+The purpose of this function is to extract a boolean value from the message object and store it in the type object pointed to by param_2. The bool_id parameter specifies which boolean value to extract.
+
+
+```c 
+void __thiscall nv::message::extract<nv::bool_id>(message *this,bool_id param_1,type *param_2)
+
+{
+  bool bVar1;
+  set_type sVar2;
+  
+  bVar1 = has<nv::bool_id>(this,param_1);
+  if (bVar1) {
+    sVar2 = get<nv::bool_id>(this,param_1);
+    *param_2 = SUB41(sVar2,0);
+  }
+  return;
+}
+```
+
+
+ nv::message::ref<IPAddr6>
+      
+      
+addr nv::StoreCord::getEntry
+      
+      
+addr nv::Handler::findListenersFor
+      
+      
+addr nv::follow
+      
+      
+addr nv::Logger::Logger
+      
+      
+addr nv::RemoteObject::~RemoteObject
+      
+      
+addr nv::ThinRunner::addBeforeSleep
+      
+      
+addr nv::ThinRunner::addTimer
+      
+      
+addr nv::ThinRunner::changeSocket
+      
+      
+addr nv::Allocator::free
+      
+      
+addr nv::ArpResolver::send
+      
+addr nv::Allocator::allocate
+      
+      
+addr nv::ThinRunner::removeTimer
+      
+      
+addr nv::Allocator::allocate
+      
+      
+addr nv::Handler::handleCmd
+      
+      
+addr nv::followHandlerIdRange
+      
+      
+addr nv::AMapMirror::cleanup
+      
+
+
 
 
 ### References:
