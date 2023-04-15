@@ -626,141 +626,148 @@ Shadow byte legend (one shadow byte represents 8 application bytes):
 Alas! The final part I will be reversing to finish this litte project!
 
 ## libumsg 
-This libary its self would constitute a full write up for as it is huge and an integral part of MicroTicks internels. 
+This libary its self would constitute a full write up for as it is huge and an integral part of MicroTicks internels. I was getting fed up with using Ghidra as it is ugly and really not nice to use. So I got IDA pro and used it for the remaining part of this project. 
 
 
+## Kernel functions nv::KernelSomething 
 
 ###  nv::kernelGetMacAddr
 
 This is a C++ function named nv::kernelSocket() which returns an integer. The purpose of this function is to create a kernel socket if it does not already exist and return the socket descriptor.
 
 ```c
-int nv::kernelSocket(void)
-
+int __fastcall nv::kernelSocket(nv *this)
 {
-  if (DAT_00069c08 == -1) {
-    DAT_00069c08 = socket(2,2,0);
-  }
-  return DAT_00069c08;
+  if ( dword_69270 == -1 )
+    dword_69270 = socket(2, 1, 0);
+  return dword_69270;
 }
 ```
 
 ### nv::kernelGetMacAddr 
 
- kernelSocket and ioctl functions to retrieve the MAC address associated with a network interface, which is stored in an nv object. If the ioctl call fails, an error message is printed to cout and the nv object is zeroed out. The security of this function depends on its integration with the rest of the software system.
+The function first copies the first 16 characters of the input string into a local buffer named v15. It then calls nv::kernelSocket to create a socket and sends an ioctl request with the SIOCGIFHWADDR command to get the MAC address of the network interface associated with the socket. 
  
+```c
+  v6 = nv::kernelSocket(v5);
+  if ( ioctl(v6, 0x8927u, v15) == -1 )
+  {
+    v7 = _errno_location();
+    nv::ioctlErrorStr((nv *)v16, a2, "SIOCGIFHWADDR", *v7);
+    v8 = (ostream *)operator<<(&cout, v16);
+```
+
+### nv::kernelGetIfindex
+ nv::kernelGetIfindex function, which takes a pointer to an nv object and a pointer to a string object as arguments. The function extracts the first 16 characters from the nv object, uses them as an argument to the ioctl function to retrieve the index of a network interface, and returns the result. If the ioctl call fails, the function outputs an error message and returns -1.
 
 ```c
-nv * __thiscall nv::kernelGetMacAddr(nv *this,string *param_1)
+ v5 = nv::kernelSocket(v4);
+  v6 = ioctl(v5, 0x8933u, v10);
+  if ( v6 != -1 )
+    return v10[4];
+  v7 = _errno_location();
+  nv::ioctlErrorStr((nv *)v11, this, "SIOCGIFINDEX", *v7);
+  v8 = (ostream *)operator<<(&cout, v11);
+  endl(v8);
+  string::~string((string *)v11);
+```
+### nv::kernelGetFlags 
 
-{
-  int iVar1;
-  int *piVar2;
-  undefined4 uVar3;
-  nv *pnVar4;
-  byte bVar5;
-  int local_40;
-  char local_3c [18];
-  undefined4 local_2a [6];
-  
-  bVar5 = 0;
-  strncpy(local_3c,(char *)(*(int *)param_1 + 4),0x10);
-  iVar1 = kernelSocket();
-  iVar1 = ioctl(iVar1,0x8927,local_3c);
-  if (iVar1 == -1) {
-    piVar2 = __errno_location();
-    ioctlErrorStr((nv *)&local_40,param_1,"SIOCGIFHWADDR",*piVar2);
-    uVar3 = FUN_0003995d((ostream *)&cout,&local_40);
-    FUN_0002da9e(uVar3,endl);
-    string::freeptr();
-    pnVar4 = this;
-    for (iVar1 = 6; iVar1 != 0; iVar1 = iVar1 + -1) {
-      *pnVar4 = (nv)0x0;
-      pnVar4 = pnVar4 + (uint)bVar5 * -2 + 1;
-    }
-  }
-  else {
-    FUN_0005cbb0((undefined4 *)this,local_2a);
-  }
-  return this;
-}
+The function creates a socket using the nv::kernelSocket() function and performs an ioctl() call on the socket with the SIOCGIFFLAGS flag to retrieve the interface flags. If the ioctl() call is successful, the function returns the flags stored in the v9 array at the eighth position. Otherwise, the function returns -1.
 
+```c
+v5 = nv::kernelSocket(v4);
+  if ( ioctl(v5, 0x8913u, v9) != -1 )
+    return v9[8];
+  v6 = _errno_location();
+  nv::ioctlErrorStr((nv *)v10, this, "SIOCGIFFLAGS", *v6);
+```
+### nv::kernelSetFlags
+The function first creates a character array v9 and copies the name of the network interface into it. It then calls the kernelSocket function, which creates a socket that can be used to interact with the network interface.
+
+```c
+strncpy((char *)v16, v5, 0x10u);
+  v8 = nv::kernelSocket(v7);
+  v9 = ioctl(v8, 0x8914u, v16);
+  v10 = 1;
+  if ( v9 == -1 )
+  ```
+
+
+### nv::kernelModFlags
+
+This function nv::kernelModFlags modifies the flags of a network interface using the SIOCSIFFLAGS ioctl command. It takes in three parameters: this, a pointer to the nv object; a2, a pointer to a string containing the name of the network interface to modify; a3 and a4, two unsigned integers representing the flags to clear and set, respectively.
+
+The function first calls nv::kernelGetFlags to retrieve the current flags of the network interface. If this call fails, the function returns 0. Otherwise, the function calculates the new set of flags by clearing the bits specified in a3 and setting the bits specified in a4. If the resulting flags are the same as the original flags, the function returns 1 without making any changes. Otherwise, the function calls nv::kernelSetFlags with the new set of flags to modify the network interface
+
+
+```c
+ unsigned int v6; // $a2
+  int Flags; // $v0
+  const string *v9; // $a1
+
+  Flags = nv::kernelGetFlags(this, a2);
+  if ( Flags == -1 )
+    return 0;
+  v9 = (const string *)(Flags & ~(unsigned int)a2 | a3);
+  if ( (const string *)Flags == v9 )
+    return 1;
+  else
+    return nv::kernelSetFlags(this, v9, v6);
 ```
 
-### nv::message::extract<nv::bool_id>
- It is a templated function that takes a pointer to a message object, a bool_id object, and a pointer to a type object as its parameters.
+### nv::kernelGetMtu
 
-The purpose of this function is to extract a boolean value from the message object and store it in the type object pointed to by param_2. The bool_id parameter specifies which boolean value to extract.
+The function then calls the ioctl function with three arguments: the file descriptor v5, the constant value 0x8921u (which corresponds to the SIOCGIFMTU ioctl command), and a pointer to the v9 array. If ioctl returns a non-negative value, the function returns the value stored in the fifth element of the v9 array (which represents the MTU of the interface).
 
-
-```c 
-void __thiscall nv::message::extract<nv::bool_id>(message *this,bool_id param_1,type *param_2)
-
-{
-  bool bVar1;
-  set_type sVar2;
-  
-  bVar1 = has<nv::bool_id>(this,param_1);
-  if (bVar1) {
-    sVar2 = get<nv::bool_id>(this,param_1);
-    *param_2 = SUB41(sVar2,0);
-  }
-  return;
-}
+```c
+ v5 = nv::kernelSocket(v4);
+  if ( ioctl(v5, 0x8921u, v9) != -1 )
+    return v9[4];
+  v6 = _errno_location();
+  nv::ioctlErrorStr((nv *)v10, this, "SIOCGIFMTU", *v6);
+  v7 = (ostream *)operator<<(&cout, v10);
 ```
 
 
- nv::message::ref<IPAddr6>
-      
-      
-addr nv::StoreCord::getEntry
-      
-      
-addr nv::Handler::findListenersFor
-      
-      
-addr nv::follow
-      
-      
-addr nv::Logger::Logger
-      
-      
-addr nv::RemoteObject::~RemoteObject
-      
-      
-addr nv::ThinRunner::addBeforeSleep
-      
-      
-addr nv::ThinRunner::addTimer
-      
-      
-addr nv::ThinRunner::changeSocket
-      
-      
-addr nv::Allocator::free
-      
-      
-addr nv::ArpResolver::send
-      
-addr nv::Allocator::allocate
-      
-      
-addr nv::ThinRunner::removeTimer
-      
-      
-addr nv::Allocator::allocate
-      
-      
-addr nv::Handler::handleCmd
-      
-      
-addr nv::followHandlerIdRange
-      
-      
-addr nv::AMapMirror::cleanup
-      
 
+## Message Functions nv::MessageSomething
+These functions are less interesting, there are around 50 and I will be covering two of them. 
 
+### nv::message::get_addr6
+
+function takes in four parameters: a pointer a1 to the memory location to store the IPv6 address, an integer a2, an integer a3, and a pointer a4 to a constant void. The function appears to be looking up an IPv6 address in a data structure using the sub_11C60 function and then copying the address to the memory location pointed to by a1. The function then returns the memory location pointed to by a1.
+
+The sub_11C60 function takes in two parameters: a pointer a1 to a data structure and an integer a2. The function appears to be searching through the data structure for an entry with an _DWORD value equal to a2. Once it finds an entry with this value, the function returns a pointer to that entry. If it does not find an entry with this value, the function returns a null pointer.
+
+```c
+v5 = sub_11C60(*(_DWORD **)(*(_DWORD *)a2 + 16), a3);
+  if ( v5 )
+    v7 = v5 + 2;
+  else
+    v7 = a4;
+  memcpy(a1, v7, 0x10u);
+  return a1;
+```
+### nv::message::get_message    
+nv::message::get_addr6 takes in a pointer to a buffer a1, an integer a2, another integer a3, and a pointer a4. It appears to retrieve an IPv6 address from a given source and copies it to the provided buffer. It uses the function sub_11C60 to obtain the address from a specified index and copies it using memcpy.
+
+sub_11C60 takes in a pointer to an array of integers a1 and an integer a2. It appears to traverse the array and return a pointer to the integer array element whose value matches a2, or a null pointer if no such element is found.
+```c
+int __fastcall nv::message::get_message(int a1, int a2, int a3, _DWORD *a4)
+{
+  _DWORD *v5; // $v0
+  _DWORD *v7; // $a1
+
+  v5 = sub_11C60(*(_DWORD **)(*(_DWORD *)a2 + 16), a3);
+  if ( v5 )
+    v7 = v5 + 2;
+  else
+    v7 = a4;
+  sub_1745C(a1, v7);
+  return a1;
+}
+```
 
 
 ### References:
